@@ -1,4 +1,4 @@
-import { KeyCode, MonacoEditor } from "./monaco.js";
+import { TextEditor } from "./editor.js";
 import { Lua } from "./lua/lua-runtime.js";
 import { BuiltinFiles } from "./fs/builtin-files.js";
 import { Display } from "./display.js";
@@ -24,11 +24,7 @@ let isRunning = false;
 let isPaused = false;
 
 // Initialize components and set up the initial state of the application.
-await Promise.all([BuiltinFiles.load(), MonacoEditor.init()]);
-// Register keyboard shortcuts for when monaco is in focus
-MonacoEditor.registerControlShortcut(KeyCode.KeyS, Workspace.saveCurrentFile);
-MonacoEditor.registerControlShortcut(KeyCode.Enter, startSession);
-MonacoEditor.registerControlShortcut(KeyCode.Escape, stopSession);
+await Promise.all([BuiltinFiles.load(), TextEditor.init()]);
 Workspace.init();
 Workspace.setExplorerReloadHandler(() => FileExplorer.reload());
 initResizers();
@@ -150,7 +146,7 @@ function startSession() {
   Lua.init();
 
   // Load the currently open script into Lua
-  const script = MonacoEditor.getText();
+  const script = TextEditor.getText();
   const scriptFilePath = Workspace.getCurrentOpenPath();
 
   // Execute the script. If it fails, stop the session.

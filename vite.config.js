@@ -1,15 +1,9 @@
 import { spawn } from "node:child_process";
-import { dirname, join, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
-import monacoEditorPluginPkg from "vite-plugin-monaco-editor";
 
 const rootDir = dirname(fileURLToPath(import.meta.url));
-
-// vite-plugin-monaco-editor is CJS; under ESM the default import may be the
-// module namespace rather than the function itself.
-const monacoEditorPlugin =
-  monacoEditorPluginPkg.default ?? monacoEditorPluginPkg;
 
 const LUA_API_WATCH_DEBOUNCE_MS = 200;
 
@@ -100,14 +94,5 @@ function regenLuaApiPlugin() {
 export default defineConfig({
   // GitHub Pages project site: https://<user>.github.io/<repo>/
   base: "/galactic-unicorn-web-sdk/",
-  plugins: [
-    monacoEditorPlugin({
-      // Only ship the base editor worker (discard HTML/CSS/JS/TS workers)
-      languageWorkers: ["editorWorkerService"],
-      // Plugin default joins `outDir` + `base` + publicPath, but `base` is only a
-      // URL prefix on GitHub Pages so workers must live at dist/monacoeditorwork/.
-      customDistPath: (root, outDir) => join(root, outDir, "monacoeditorwork"),
-    }),
-    regenLuaApiPlugin(),
-  ],
+  plugins: [regenLuaApiPlugin()],
 });

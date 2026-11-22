@@ -70,7 +70,7 @@
         </div>
       </div>
       <div class="resizer resizer-v" data-fixed="prev"></div>
-      <div id="monaco-pane" class="monaco-pane" aria-label="Text editor">
+      <div id="editor-pane" class="editor-pane" aria-label="Text editor">
         <div
           id="editor-header"
           class="editor-header editor-header--empty"
@@ -95,7 +95,15 @@
             </button>
           </div>
         </div>
-        <div id="monaco-container"></div>
+        <textarea
+          id="editor-textarea"
+          class="editor-textarea"
+          aria-label="Code editor"
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+        ></textarea>
       </div>
       <div class="resizer resizer-v" data-fixed="next"></div>
       <aside id="file-explorer-pane" aria-label="Project files">

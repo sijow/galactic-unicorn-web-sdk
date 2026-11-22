@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 
 import { FileSystem } from "./fs/file-system.js";
 import { BuiltinFiles } from "./fs/builtin-files.js";
-import { MonacoEditor } from "./monaco.js";
+import { TextEditor } from "./editor.js";
 import { Terminal } from "./terminal.js";
 import { EditorHeader } from "./ui/editor-header.js";
 
@@ -47,7 +47,7 @@ export const Workspace = Object.freeze({
   init() {
     EditorHeader.init(() => Workspace.copyBuiltinOpenFileToProject());
 
-    MonacoEditor.closeBuffer();
+    TextEditor.closeBuffer();
   },
 
   /**
@@ -83,8 +83,8 @@ export const Workspace = Object.freeze({
   saveCurrentFile() {
     if (readOnly || isBuiltIn || !currentOpenPath) return;
 
-    MonacoEditor.ensureFinalNewLine();
-    const text = MonacoEditor.getText();
+    TextEditor.ensureFinalNewLine();
+    const text = TextEditor.getText();
     // Convert text to Uint8Array
     const encoded = new TextEncoder().encode(text);
 
@@ -130,7 +130,7 @@ export const Workspace = Object.freeze({
       const decodedString = new TextDecoder().decode(rawFile);
 
       // Load into monaco
-      MonacoEditor.openBuffer(path, decodedString, extension, readOnly);
+      TextEditor.openBuffer(path, decodedString, extension, readOnly);
     } else {
       // If we "load" binary as description into the editor we need to NOT save it upon exit!
       readOnly = true;
@@ -142,7 +142,7 @@ export const Workspace = Object.freeze({
         size = BuiltinFiles.fileSizeAtPath(path);
       }
 
-      MonacoEditor.openBuffer(
+      TextEditor.openBuffer(
         path,
         `Binary (${size} bytes)`,
         "plaintext",
@@ -230,7 +230,7 @@ export const Workspace = Object.freeze({
    * @param {string} path - The path of the file that was removed.
    */
   onFileRemoved(path) {
-    MonacoEditor.forgetBufferPath(path);
+    TextEditor.forgetBufferPath(path);
 
     // If the currently opened file was removed
     if (currentOpenPath !== path) {
@@ -241,7 +241,7 @@ export const Workspace = Object.freeze({
 
     // Empty editor and prevent saving
     currentOpenPath = null;
-    MonacoEditor.closeBuffer();
+    TextEditor.closeBuffer();
     refreshEditorHeader();
   },
 
@@ -251,7 +251,7 @@ export const Workspace = Object.freeze({
    * @param {string} newPath - The new path of the file.
    */
   onFileRenamed(oldPath, newPath) {
-    MonacoEditor.renameBufferPath(oldPath, newPath);
+    TextEditor.renameBufferPath(oldPath, newPath);
 
     // Update the currentOpenPath
     if (currentOpenPath === oldPath) {
